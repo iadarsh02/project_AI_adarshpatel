@@ -5,7 +5,6 @@ package com.example.ai_mad_numgame;
  */
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -14,9 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.google.gson.Gson;  //make changes at appropriate places to include this dependency
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     int []score={-1,-1,-1}; //score of each match is updated in this array. A total of three matches in a game
     String operators[]={"+","-","*","/"};
     int correctButton=0; //which button will have the correct answer (tag of that button)
-    Random random=new Random(); //You will generate randdom alegebra questions
+    Random random=new Random(); //You will generate random algebra questions
     TextView textView2;
     Button button1,button2,button3,button4;
     public void load(View view){
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         int[][]dataFrame=dataPrep(); //dataPrep function returns a two-dimenssional array
         double slope=LR.getSlope(dataFrame); //LR class, which provides slope on invoking getSlope
         new AlertDialog.Builder(this)
-               // .setIcon() //your custom icon
+                // .setIcon() //your custom icon
                 .setTitle("Performance")
 
                 .setMessage(getInterpretation(dataFrame,slope))
@@ -72,12 +69,53 @@ public class MainActivity extends AppCompatActivity {
     public void newMatch() {  //A game is composed of three matches
 
         int operand1 = random.nextInt(10);
-        int operand2=0;
+        int operand2=random.nextInt(Math.abs(10));
+        correctButton =  random.nextInt(4);
         //check is operand2 is not zero; otherwise in case of division-divide by zero error will come
-        String operator = operators[random.nextInt(4)];
-        textView2.setText(operand1 + operator + operand2);
+        if(operand2 != 0) {
+            int ans=-100;
+            String operator = operators[random.nextInt(4)];
+            textView2.setText(operand1 + operator + operand2);
+            if(operator.equals("+")){
+                ans=operand1+operand2;
+            }else if(operator.equals("-")){
+                ans=operand1-operand2;
+            }
+            else if(operator.equals("/")){
+                ans=operand1/operand2;
+            }
+            else if(operator.equals("*")){
+                ans=operand1*operand2;
+            }
+            if(correctButton == 0 ) {
+                button1.setText(ans+"");
+                button2.setText(operand1  + " ");
+                button3.setText(operand2  + "");
+                button4.setText(operand1  + operator + operand2);
+            }
+            else if(correctButton== 1 ){
+                button1.setText(operand1  + " ");
+                button2.setText(ans+ " ");
+                button3.setText(operand1  + "");
+                button4.setText(operand1  + operator + operand2);
+            }
+            else if(correctButton== 2 ){
+                button1.setText(operand1  + " " );
+                button2.setText(operand1  + " ");
+                button3.setText(ans+ " ");
+                button4.setText(operand1  + operator + operand2);
+            }
+            else {
+                //button1.setText(ans);
+                button1.setText(operand1  + " " );
+                button2.setText(operand2 + " ");
+                button3.setText(operand1 + "");
+                button4.setText(ans+ " ");
+            }
+        }
+        // button1.setText(operand1  + operand2);
+        // Your code here, to diplay correct and incorrect options on the buttons
 
-      // Your code here, to diplay correct and incorrect options on the buttons
 
         if(matchCounter==3){    // if three matches are completed updatee the perfomrance in sharedpreferences
 
@@ -95,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     public int sumOfScore(){
         //Computing the sum of score array, which has the 1 or in each index,depending on correct or incorrect answers
         int sum=0;
-       // your code here
+        // your code here
         return sum;
     }
 
@@ -113,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getInterpretation(int [][]dataFrame,double slope){
-       //provide interpretation based on your slope analysis
+        //provide interpretation based on your slope analysis
         // Your code here
         return "Your Interpretation";
     }
